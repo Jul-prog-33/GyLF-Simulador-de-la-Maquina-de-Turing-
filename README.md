@@ -88,4 +88,3 @@ docs/                documento técnico y manual de usuario
 3. Ingresar una cadena y un límite de pasos.
 4. Ejecutar paso a paso o ejecutar completa.
 5. Revisar resultado, cinta, cabezal, estado actual e historial.
-=======
