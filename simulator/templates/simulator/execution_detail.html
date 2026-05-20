@@ -1,0 +1,107 @@
+{% extends "simulator/base.html" %}
+
+{% block title %}Ejecución · {{ machine.name }}{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <a href="{{ machine.get_absolute_url }}">← Volver a {{ machine.name }}</a>
+    <h1>Ejecución de {{ machine.name }}</h1>
+    <p>Entrada: <strong>{{ execution.input_string|default:"ε" }}</strong></p>
+</section>
+
+{% if diagnostics %}
+    <section class="diagnostics">
+        {% for diagnostic in diagnostics %}
+            <p>{{ diagnostic }}</p>
+        {% endfor %}
+    </section>
+{% endif %}
+
+<section class="panel status-panel">
+    <div>
+        <span class="label">Estado actual</span>
+        <strong>{{ execution.current_state }}</strong>
+    </div>
+    <div>
+        <span class="label">Resultado</span>
+        <strong class="badge {{ execution.status|lower }}">{{ execution.get_status_display }}</strong>
+    </div>
+    <div>
+        <span class="label">Pasos</span>
+        <strong>{{ execution.steps }} / {{ execution.max_steps }}</strong>
+    </div>
+    <div>
+        <span class="label">Cinta final visible</span>
+        <strong>{% if final_tape %}{{ final_tape }}{% else %}&nbsp;{% endif %}</strong>
+    </div>
+    {% if halt_reason %}
+        <div>
+            <span class="label">Razón de parada</span>
+            <strong>{{ halt_reason }}</strong>
+        </div>
+    {% endif %}
+</section>
+
+<section class="panel">
+    <h2>Cinta</h2>
+    <div class="tape">
+        {% for cell in cells %}
+            <div class="cell {% if cell.is_head %}head{% endif %}">
+                <span class="cell-index">{{ cell.index }}</span>
+                <span class="cell-symbol">{{ cell.display_symbol }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="actions">
+    <form method="post" action="{% url 'step_execution' execution.pk %}">
+        {% csrf_token %}
+        <button type="submit" {% if execution.is_finished %}disabled{% endif %}>Paso a paso</button>
+    </form>
+    <form method="post" action="{% url 'run_execution' execution.pk %}">
+        {% csrf_token %}
+        <button type="submit" {% if execution.is_finished %}disabled{% endif %}>Ejecutar completa</button>
+    </form>
+    <form method="post" action="{% url 'reset_execution' execution.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="secondary">Reiniciar</button>
+    </form>
+</section>
+
+<section class="panel">
+    <h2>Últimos pasos</h2>
+    {% if recent_history %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Paso</th>
+                    <th>Estado</th>
+                    <th>Cabezal</th>
+                    <th>Lee</th>
+                    <th>Transición</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in recent_history %}
+                    <tr>
+                        <td>{{ item.step }}</td>
+                        <td>{{ item.state }}</td>
+                        <td>{{ item.head }}</td>
+                        <td>{{ item.read }}</td>
+                        <td>
+                            {% if item.transition %}
+                                {{ item.transition.next_state }}, {{ item.transition.write_symbol }}, {{ item.transition.direction }}
+                            {% else %}
+                                sin transición
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">La ejecución todavía no registra pasos.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "simulator/base.html" %}
+
+{% block title %}{{ machine.name }} · Simulador MT{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <a href="{% url 'home' %}">← Volver</a>
+    <h1>{{ machine.name }}</h1>
+    {% if machine.description %}<p>{{ machine.description }}</p>{% endif %}
+</section>
+
+{% if diagnostics %}
+    <section class="diagnostics">
+        {% for diagnostic in diagnostics %}
+            <p>{{ diagnostic }}</p>
+        {% endfor %}
+    </section>
+{% endif %}
+
+<section class="grid two-columns">
+    <article class="panel">
+        <h2>Ejecutar cadena</h2>
+        <form method="post" action="{% url 'start_execution' machine.pk %}" class="form">
+            {% csrf_token %}
+            {{ simulation_form.as_p }}
+            <button type="submit">Iniciar simulación</button>
+        </form>
+    </article>
+
+    <article class="panel">
+        <h2>7-tupla</h2>
+        <dl class="tuple">
+            <dt>Q</dt><dd>{{ machine.states|join:", " }}</dd>
+            <dt>Σ</dt><dd>{{ machine.input_alphabet|join:", " }}</dd>
+            <dt>Γ</dt><dd>{{ machine.tape_alphabet|join:", " }}</dd>
+            <dt>q0</dt><dd>{{ machine.initial_state }}</dd>
+            <dt>B</dt><dd>{{ machine.blank_symbol }}</dd>
+            <dt>F</dt><dd>{{ machine.final_states|join:", " }}</dd>
+        </dl>
+    </article>
+</section>
+
+<section class="panel">
+    <h2>Transiciones</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Estado</th>
+                <th>Lee</th>
+                <th>Nuevo estado</th>
+                <th>Escribe</th>
+                <th>Movimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for state, rules in machine.transitions.items %}
+                {% for read_symbol, transition in rules.items %}
+                    <tr>
+                        <td>{{ state }}</td>
+                        <td>{{ read_symbol }}</td>
+                        <td>{{ transition.next_state }}</td>
+                        <td>{{ transition.write_symbol }}</td>
+                        <td>{{ transition.direction }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <h2>Ejecuciones de esta máquina</h2>
+    {% if executions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Entrada</th>
+                    <th>Resultado</th>
+                    <th>Pasos</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for execution in executions %}
+                    <tr>
+                        <td>{{ execution.input_string|default:"ε" }}</td>
+                        <td><span class="badge {{ execution.status|lower }}">{{ execution.get_status_display }}</span></td>
+                        <td>{{ execution.steps }}</td>
+                        <td><a href="{{ execution.get_absolute_url }}">Continuar</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">Aún no hay ejecuciones.</p>
+    {% endif %}
+</section>
+{% endblock %}

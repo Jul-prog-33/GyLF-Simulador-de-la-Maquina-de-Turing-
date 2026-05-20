@@ -1,0 +1,119 @@
+{% extends "simulator/base.html" %}
+{% load static %}
+
+{% block title %}Simulador Máquina de Turing{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <p class="eyebrow">Gramáticas y Lenguajes Formales</p>
+        <h1>Simulador de Máquina de Turing</h1>
+        <p>Define una MT mediante un archivo <strong>.mt</strong>, ejecuta cadenas paso a paso y muestra cinta, cabezal, estado y criterio de aceptación.</p>
+    </div>
+    <img src="{% static 'simulator/img/Diagrama.png' %}" alt="Diagrama de Máquina de Turing">
+</section>
+
+<section class="grid top-layout">
+    <article class="panel">
+        <h2>Cargar máquina</h2>
+        <form method="post" action="{% url 'upload_machine' %}" enctype="multipart/form-data" class="form">
+            {% csrf_token %}
+            {{ upload_form.as_p }}
+            <button type="submit">Cargar archivo .mt</button>
+        </form>
+    </article>
+
+    <article class="panel">
+        <h2>Formato esperado del archivo .mt</h2>
+        <pre>Estados: q0,qf
+Alfabeto_entrada: 0,1
+Alfabeto_cinta: 0,1,B
+Inicial: q0
+Finales: qf
+Blanco: B
+Transiciones:
+q0,0 -> q0,0,R
+q0,B -> qf,B,S</pre>
+    </article>
+</section>
+
+<section class="grid bottom-layout">
+    <article class="panel">
+        <div class="panel-header">
+            <h2>Máquinas cargadas</h2>
+            {% if machines %}
+                <form method="post" action="{% url 'clear_machines' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="danger small">Eliminar todas</button>
+                </form>
+            {% endif %}
+        </div>
+        {% if machines %}
+            <div class="machine-list">
+                {% for machine in machines %}
+                    <article class="machine-item">
+                        <div>
+                            <strong>{{ machine.name }}</strong>
+                            <span>{{ machine.states|length }} estados · Σ={{ machine.input_alphabet|join:"," }} · Γ={{ machine.tape_alphabet|join:"," }}</span>
+                        </div>
+                        <div class="inline-actions">
+                            <a href="{{ machine.get_absolute_url }}">Abrir</a>
+                            <form method="post" action="{% url 'delete_machine' machine.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="danger small">Eliminar</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="muted">Todavía no hay máquinas cargadas. Usa el formulario o carga uno de los archivos de ejemplo en la carpeta machines.</p>
+        {% endif %}
+    </article>
+
+    <article class="panel">
+        <div class="panel-header">
+            <h2>Historial reciente</h2>
+            {% if executions %}
+                <form method="post" action="{% url 'clear_executions' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="danger small">Eliminar historial</button>
+                </form>
+            {% endif %}
+        </div>
+        {% if executions %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Máquina</th>
+                        <th>Entrada</th>
+                        <th>Estado</th>
+                        <th>Pasos</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for execution in executions %}
+                        <tr>
+                            <td>{{ execution.machine.name }}</td>
+                            <td>{{ execution.input_string|default:"ε" }}</td>
+                            <td><span class="badge {{ execution.status|lower }}">{{ execution.get_status_display }}</span></td>
+                            <td>{{ execution.steps }}</td>
+                            <td><a href="{{ execution.get_absolute_url }}">Ver</a></td>
+                            <td>
+                                <form method="post" action="{% url 'delete_execution' execution.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="danger small">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="muted">No hay ejecuciones registradas.</p>
+        {% endif %}
+    </article>
+</section>
+{% endblock %}

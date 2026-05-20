@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Simulador de Máquina de Turing{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'simulator/css/styles.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="shell header-inner">
+            <a class="brand" href="{% url 'home' %}">
+                <span class="brand-mark">MT</span>
+                <span>Simulador de Máquina de Turing</span>
+            </a>
+            <div class="logos">
+                <img src="{% static 'simulator/img/LogoUTP.png' %}" alt="Logo UTP">
+                <img src="{% static 'simulator/img/ISC.png' %}" alt="Logo ISC">
+            </div>
+        </div>
+    </header>
+
+    <main class="shell main-layout">
+        {% if messages %}
+            <section class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </section>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="shell footer-lines">
+            <span>Gramáticas y Lenguajes Formales</span>
+            <span>Semestre 2026I</span>
+            <span>Por: Julian Valencia Garcia</span>
+            <span>Presentado a: Felipe Gutierres Isaza</span>
+        </div>
+    </footer>
+</body>
+</html>
