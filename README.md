@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Simulador de Máquina de Turing
 
 Aplicación web académica construida con Python y Django para cargar, validar y ejecutar Máquinas de Turing deterministas descritas en archivos `.mt`.
@@ -88,3 +89,7 @@ docs/                documento técnico y manual de usuario
 3. Ingresar una cadena y un límite de pasos.
 4. Ejecutar paso a paso o ejecutar completa.
 5. Revisar resultado, cinta, cabezal, estado actual e historial.
+=======
+# GyLF-Simulador-de-la-Maquina-de-Turing-
+Trabajo Final de la materia de GyLF
+>>>>>>> b5cd612cf841210911d9ea64a999332f4def684f
