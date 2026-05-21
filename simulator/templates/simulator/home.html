@@ -71,49 +71,104 @@ q0,B -> qf,B,S</pre>
         {% endif %}
     </article>
 
-    <article class="panel">
-        <div class="panel-header">
-            <h2>Historial reciente</h2>
-            {% if executions %}
-                <form method="post" action="{% url 'clear_executions' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="danger small">Eliminar historial</button>
-                </form>
-            {% endif %}
-        </div>
+<article class="panel">
+
+    <div class="panel-header">
+        <h2>Historial reciente</h2>
+
         {% if executions %}
+            <form method="post" action="{% url 'clear_executions' %}">
+                {% csrf_token %}
+                <button type="submit" class="danger small">
+                    Eliminar historial
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    {% if executions %}
+
+        <div class="table-wrap">
+
             <table>
+
                 <thead>
                     <tr>
                         <th>Máquina</th>
                         <th>Entrada</th>
                         <th>Estado</th>
                         <th>Pasos</th>
-                        <th></th>
-                        <th></th>
+                        <th>Ver</th>
+                        <th>Eliminar</th>
                     </tr>
                 </thead>
+
                 <tbody>
+
                     {% for execution in executions %}
+
                         <tr>
-                            <td>{{ execution.machine.name }}</td>
-                            <td>{{ execution.input_string|default:"ε" }}</td>
-                            <td><span class="badge {{ execution.status|lower }}">{{ execution.get_status_display }}</span></td>
-                            <td>{{ execution.steps }}</td>
-                            <td><a href="{{ execution.get_absolute_url }}">Ver</a></td>
+
                             <td>
-                                <form method="post" action="{% url 'delete_execution' execution.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="danger small">Eliminar</button>
-                                </form>
+                                {{ execution.machine.name }}
                             </td>
+
+                            <td>
+                                {{ execution.input_string|default:"ε" }}
+                            </td>
+
+                            <td>
+                                <span class="badge {{ execution.status|lower }}">
+                                    {{ execution.get_status_display }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ execution.steps }}
+                            </td>
+
+                            <td>
+                                <a href="{{ execution.get_absolute_url }}">
+                                    Ver
+                                </a>
+                            </td>
+
+                            <td>
+
+                                <form method="post"
+                                      action="{% url 'delete_execution' execution.pk %}">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="danger small">
+                                        Eliminar
+                                    </button>
+
+                                </form>
+
+                            </td>
+
                         </tr>
+
                     {% endfor %}
+
                 </tbody>
+
             </table>
-        {% else %}
-            <p class="muted">No hay ejecuciones registradas.</p>
-        {% endif %}
-    </article>
+
+        </div>
+
+    {% else %}
+
+        <p class="muted">
+            No hay ejecuciones registradas.
+        </p>
+
+    {% endif %}
+
+</article>
+
 </section>
+
 {% endblock %}

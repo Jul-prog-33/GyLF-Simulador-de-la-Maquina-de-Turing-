@@ -31,10 +31,7 @@ pip install -r requirements.txt
 # 3. Crear la base de datos
 python manage.py migrate
 
-# 4. (Opcional) Cargar las máquinas de ejemplo
-python manage.py load_sample_machines
-
-# 5. Iniciar el servidor
+# 4. Iniciar el servidor
 python manage.py runserver
 ```
 
@@ -109,7 +106,7 @@ estado_actual,símbolo_leído -> nuevo_estado,símbolo_escrito,movimiento
 ## Ejecutar pruebas
 
 ```bash
-python manage.py test
+python manage.py manage.py
 ```
 
 24 pruebas que cubren parser, validación semántica, ejecución de todas las máquinas, casos borde y operaciones de la interfaz.

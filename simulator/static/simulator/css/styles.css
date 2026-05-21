@@ -56,8 +56,9 @@ button.danger {
 
 button.small {
     border-radius: 6px;
-    font-size: .9rem;
-    padding: 8px 12px;
+    font-size: .78rem;
+    padding: 6px 10px;
+    white-space: nowrap;
 }
 
 button:disabled {
@@ -72,10 +73,10 @@ table {
 
 th,
 td {
-    border-bottom: 1px solid var(--line);
-    padding: 12px;
-    text-align: left;
-    vertical-align: top;
+    padding: 10px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    vertical-align: middle;
 }
 
 th {
@@ -91,11 +92,11 @@ pre {
     overflow-x: auto;
     padding: 18px;
 }
-
 .shell {
+    width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
-    max-width: 1920px;
-    padding: 0 32px;
+    padding: 0 20px;
 }
 
 .site-header {
@@ -138,7 +139,13 @@ pre {
 }
 
 .logos img {
-    height: 42px;
+    height: 90px;
+    object-fit: contain;
+    width: auto;
+}
+
+.brand img {
+    height: 90px;
     object-fit: contain;
     width: auto;
 }
@@ -205,14 +212,18 @@ pre {
     margin-bottom: 24px;
 }
 
-.top-layout {
-    grid-template-columns: minmax(480px, 2fr) minmax(420px, 1fr);
+.top-layout,
+.bottom-layout {
+    grid-template-columns: 2fr 1fr;
     align-items: start;
 }
 
-.bottom-layout {
-    grid-template-columns: minmax(480px, 2.2fr) minmax(420px, 1fr);
-    align-items: start;
+/* Responsive automático */
+@media (max-width: 1200px) {
+    .top-layout,
+    .bottom-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
 .two-columns {
@@ -227,10 +238,11 @@ pre {
 .panel {
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 10px;
-    box-shadow: 0 8px 26px rgba(0, 91, 82, .07);
-    margin-bottom: 22px;
-    padding: 26px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    overflow: hidden;
+    width: 100%;
 }
 
 .machine-list {
@@ -241,19 +253,45 @@ pre {
 }
 
 .machine-item {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     gap: 14px;
-    padding: 14px 16px;
+    align-items: center;
     border: 1px solid var(--line);
-    border-radius: 10px;
-    background: #fcfffe;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff;
+    transition: .2s ease;
 }
+
+.machine-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+
+body {
+    background:
+        linear-gradient(to bottom, #f6f8f7, #eef4f2);
+}
+
 
 .panel table {
     width: 100%;
+    min-width: 700px;
+    table-layout: fixed;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
 
 .panel h2,
 .page-heading h1 {
@@ -322,11 +360,12 @@ pre {
 }
 
 .inline-actions {
-    align-items: center;
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
     justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 120px;
 }
 
 .messages {
@@ -499,4 +538,13 @@ pre {
     .inline-actions {
         justify-content: flex-start;
     }
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.panel table {
+    min-width: 700px;
 }
